@@ -1,0 +1,58 @@
+﻿@model WebApplication3.ViewModels.HomeVM
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Library Management System</h1>
+
+<div class="books" style="display:flex;">
+
+    @foreach (var item in Model.Books)
+    {
+        <div class="card" style="width: 18rem;">
+            <div class="card-body">
+                <h5 class="card-title">@item.Name</h5>
+                <p class="card-text">Sehife sayisi: @item.PageCount</p>
+                <p class="card-text">Qeydiyyat tarixi: @item.PostedDate</p>
+                <p class="card-text">Nesr tarixi: @item.ReleaseDate</p>
+                <p class="card-text">Qiymet: @item.Price</p>
+                <a href="#" class="btn btn-primary">Etrafli</a>
+            </div>
+        </div>
+    }
+
+</div>
+
+<button class="refreshbtn btn btn-primary">Refresh</button>
+
+@section  scripts{
+    <script>
+        $(document).ready(function () {
+            $(document).on("click", ".refreshbtn", function () {
+                    $.ajax({
+                        url: "/Book/GetAllBooks/",
+                        method: "GET",
+                        success: function (response) {
+                            $(".books").html("");
+                            for (var i = 0; i < response.length; i++) {
+                                 var htmltext = `<div class="card" style="width: 18rem;">\
+                            <div class="card-body">\
+                         <h5 class="card-title">`+response[i].name+`</h5>\
+                         <p class="card-text">Sehife sayisi: `+response[i].pageCount+`</p>\
+                         <p class="card-text">Qeydiyyat tarixi: `+response[i].postedDate+`</p>\
+                         <p class="card-text">Nesr tarixi: `+response[i].releaseDate+`</p>\
+                         <p class="card-text">Qiymet: `+response[i].price+`</p>\
+                         <a href="#" class="btn btn-primary">Etrafli</a>\
+                                </div>\
+                            </div>`;
+                                $(".books").append(htmltext);
+                                console.log(response[i])
+                            }
+                        }
+                    });
+            });
+        })
+
+    </script>
+ }
